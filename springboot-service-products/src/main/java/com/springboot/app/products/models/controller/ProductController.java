@@ -17,8 +17,8 @@ import com.springboot.app.products.models.service.IProductService;
 @RestController
 public class ProductController {
 	
-	@Autowired
-	private Environment env;
+//	@Autowired
+//	private Environment env;
 	
 	@Value("${server.port}")
 	private Integer port;
