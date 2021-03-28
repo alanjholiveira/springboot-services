@@ -50,6 +50,4 @@ public class Product {
 		this.port = port;
 	}
 	
-	
-
 }

@@ -9,7 +9,6 @@ public class Item {
 	}
 
 	public Item(Product product, Integer quantity) {
-		super();
 		this.product = product;
 		this.quantity = quantity;
 	}
