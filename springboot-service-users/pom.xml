@@ -5,21 +5,16 @@
 		
 	<parent>
         <groupId>com.springboot.app</groupId>
-        <artifactId>springbootService-parent</artifactId>
+		<artifactId>springboot-service-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 	
 	<groupId>com.springboot.app.users</groupId>
 	<artifactId>springboot-service-users</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>springboot-service-users</name>
+	<name>${project.artifactId}</name>
 	<description>Micros Service Users by Sprint Boot</description>
-	
-	<properties>
-		<java.version>11</java.version>
-		<spring-cloud.version>Hoxton.SR10</spring-cloud.version>
-	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
