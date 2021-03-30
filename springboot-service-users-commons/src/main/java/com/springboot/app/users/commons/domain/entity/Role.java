@@ -1,17 +1,10 @@
 package com.springboot.app.users.commons.domain.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "roles")
-@Getter
-@Setter
-@NoArgsConstructor
 public class Role implements Serializable {
 
 	private static final long serialVersionUID = 3811413763882650421L;
@@ -23,4 +16,19 @@ public class Role implements Serializable {
 	@Column(unique = true, length = 30)
 	private String name;
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }

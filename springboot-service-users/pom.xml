@@ -4,18 +4,31 @@
 	<modelVersion>4.0.0</modelVersion>
 		
 	<parent>
-        <groupId>com.springboot.app</groupId>
-		<artifactId>springboot-service-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.3.9.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
 	
 	<groupId>com.springboot.app.users</groupId>
 	<artifactId>springboot-service-users</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>${project.artifactId}</name>
-	<description>Micros Service Users by Sprint Boot</description>
+	<name>springboot-service-users</name>
+	<!--  <name>${project.artifactId}</name>-->
+	<description>Demo project for Spring Boot</description>
+	
+	<properties>
+		<java.version>11</java.version>
+		<spring-cloud.version>Hoxton.SR10</spring-cloud.version>
+	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.springboot.app.users.commons</groupId>
+			<artifactId>springboot-service-users-commons</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -53,23 +66,9 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.springboot.app.users.commons</groupId>
-			<artifactId>springboot-service-users-commons</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 	
 	<dependencyManagement>
@@ -89,14 +88,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
