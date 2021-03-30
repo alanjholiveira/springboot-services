@@ -26,6 +26,7 @@
         <module>springboot-service-item</module>
         <module>springboot-service-products</module>
         <module>springboot-service-users</module>
+        <module>springboot-service-users-commons</module>
     </modules>
     
     <properties>

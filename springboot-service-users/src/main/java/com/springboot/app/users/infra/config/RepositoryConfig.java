@@ -1,7 +1,7 @@
 package com.springboot.app.users.infra.config;
 
-import com.springboot.app.users.domain.entity.Role;
-import com.springboot.app.users.domain.entity.User;
+import com.springboot.app.users.commons.domain.entity.Role;
+import com.springboot.app.users.commons.domain.entity.User;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;

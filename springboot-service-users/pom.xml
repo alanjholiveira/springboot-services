@@ -64,6 +64,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.springboot.app.users.commons</groupId>
+			<artifactId>springboot-service-users-commons</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	
 	<dependencyManagement>
