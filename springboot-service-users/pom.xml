@@ -13,8 +13,7 @@
 	<groupId>com.springboot.app.users</groupId>
 	<artifactId>springboot-service-users</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>springboot-service-users</name>
-	<!-- <name>${project.artifactId}</name> -->
+	<name>${project.artifactId}</name>
 	<description>Demo project for Spring Boot</description>
 
 	<dependencies>
