@@ -17,7 +17,7 @@ import com.springboot.app.oauth.clients.UserFeignClient;
 import com.springboot.app.commons.domain.entity.User;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements IUserService, UserDetailsService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
  
@@ -42,6 +42,11 @@ public class UserService implements UserDetailsService {
 		
 		return new  org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), 
 				user.getEnabled(), true, true, true, authorities);
+	}
+
+	@Override
+	public User findByUsername(String username) {
+		return client.findByUsername(username);
 	}
 
 }
