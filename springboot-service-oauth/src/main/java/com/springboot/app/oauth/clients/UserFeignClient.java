@@ -12,9 +12,9 @@ import com.springboot.app.commons.domain.entity.User;
 @FeignClient(name = "service-users")
 public interface UserFeignClient {
 	
-	static final String REST_URL = "/users/";
+//	static final String REST_URL = "/users/";
 	
-	@GetMapping("users/search/get-username")
+	@GetMapping("/users/search/get-username")
 	public User findByUsername(@RequestParam String username);
 	
 	@PutMapping("/users/{id}")

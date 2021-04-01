@@ -14,6 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.springboot.app.oauth.clients.UserFeignClient;
+
+import feign.FeignException;
+
 import com.springboot.app.commons.domain.entity.User;
 
 @Service
@@ -26,27 +29,37 @@ public class UserService implements IUserService, UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = client.findByUsername(username);
 		
-		if (user == null) {
-			LOGGER.error("Erro ao logar, usuário {} não existe", username);
-			throw new UsernameNotFoundException("Erro ao logar, usuário '"+username+"' não existe");
+		try {
+			User user = client.findByUsername(username);
+						
+			List<GrantedAuthority> authorities = user.getRoles().stream()
+										.map(role -> new SimpleGrantedAuthority(role.getName()))
+										.peek(authority -> LOGGER.info("Role: {}", authority.getAuthority()))
+										.collect(Collectors.toList());
+			
+			LOGGER.info("Authenticated User: {}", username);
+			
+			return new  org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), 
+					user.getEnabled(), true, true, true, authorities);
+			
+		} catch (FeignException e) {
+			String error = "Login failed, there is no '" + username + "' user in the system";
+			LOGGER.error(error);
+
+			throw new UsernameNotFoundException(error);
 		}
 		
-		List<GrantedAuthority> authorities = user.getRoles().stream()
-									.map(role -> new SimpleGrantedAuthority(role.getName()))
-									.peek(authority -> LOGGER.info("Role: {}", authority.getAuthority()))
-									.collect(Collectors.toList());
-		
-		LOGGER.info("Authenticated User: {}", username);
-		
-		return new  org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), 
-				user.getEnabled(), true, true, true, authorities);
 	}
 
 	@Override
 	public User findByUsername(String username) {
 		return client.findByUsername(username);
+	}
+
+	@Override
+	public User update(User user, Long id) {
+		return client.update(user, id);
 	}
 
 }
