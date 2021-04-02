@@ -1,9 +1,10 @@
-version: '3.5'
+version: '3.7'
 
 services: 
     mysql:
         container_name: db_mysql
         image: mysql:8.0.23
+        restart: always
         command: --default-authentication-plugin=mysql_native_password
         ports:
             - 3306:3306
@@ -16,6 +17,7 @@ services:
     postgres:
         container_name: db_postgresql
         image: postgres:11.11-alpine
+        restart: always
         ports: 
             - 5432:5432
         environment: 
@@ -34,12 +36,13 @@ services:
             - app-network
     
     zipkin:
-        container_name: zipkin_ui
+        container_name: zipkin-server
         image: openzipkin/zipkin
+        restart: always
         ports:
             - 9411:9411
         environment:
-            RABBIT_ADDRESSES: rabbitmq_message:5672
+            RABBIT_ADDRESSES: rabbitmq-message:5672
             # RABBIT_QUEUE: zipkin
             # RABBIT_PASSWORD: guest
             # RABBIT_USER: guest
@@ -53,17 +56,103 @@ services:
         depends_on:
             - mysql
             - rabbitmq
+            - gateway
         networks:
             - app-network
 
     rabbitmq:
-        container_name: rabbitmq_message
+        container_name: rabbitmq-message
         image: rabbitmq:3-management-alpine
         ports:
             - 5672:5672
             - 15672:15672
         networks:
             - app-network
+
+    # Images Spring Boot Services
+    config-server:
+        container_name: config-server
+        build: ./springboot-service-config-server   
+        restart: always     
+        ports: 
+            - 8888:8888
+        networks:
+            - app-network
+
+    eureka-server:
+        container_name: eureka-server
+        build: ./springboot-service-eureka-server
+        restart: always
+        ports: 
+            - 8761:8761
+        networks: 
+            - app-network
+        depends_on: 
+            - config-server
+
+    gateway:
+        container_name: service-gateway
+        build: ./springboot-service-gateway
+        restart: always
+        ports: 
+            - 8090:8090
+        networks: 
+            - app-network
+        depends_on: 
+            - config-server
+            - eureka-server
+
+    service-products:
+        container_name: service-products
+        build: ./springboot-service-products
+        restart: always
+        networks:
+            - app-network
+        depends_on: 
+            - config-server
+            - eureka-server
+            - gateway
+
+    service-items:
+        container_name: service-items
+        build: ./springboot-service-item
+        restart: always
+        networks:
+            - app-network
+        ports: 
+            - 8002:8002
+            - 8005:8005
+            - 8007:8007
+        depends_on: 
+            - config-server
+            - eureka-server
+            - gateway
+            - service-products
+
+    service-users:
+        container_name: service-users
+        build: ./springboot-service-users
+        restart: always
+        networks:
+            - app-network
+        depends_on: 
+            - config-server
+            - eureka-server
+            - gateway
+
+    service-oauth:
+        container_name: service-oauth
+        build: ./springboot-service-oauth
+        restart: always
+        ports:
+            - 9100:9100
+        networks:
+            - app-network
+        depends_on: 
+            - config-server
+            - eureka-server
+            - gateway
+            - service-users
 
 networks:
     app-network:
