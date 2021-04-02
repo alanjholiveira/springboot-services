@@ -1,0 +1,70 @@
+version: '3.5'
+
+services: 
+    mysql:
+        container_name: db_mysql
+        image: mysql:8.0.23
+        command: --default-authentication-plugin=mysql_native_password
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: db_springboot_cloud
+        networks:
+            - app-network
+
+    postgres:
+        container_name: db_postgresql
+        image: postgres:11.11-alpine
+        ports: 
+            - 5432:5432
+        environment: 
+            POSTGRES_PASSWORD: root
+            POSTGRES_DB: db_springboot_cloud
+        networks:
+            - app-network
+    
+    adminer:
+        container_name: adminer_management
+        image: adminer
+        restart: always
+        ports:
+            - 8088:8080
+        networks:
+            - app-network
+    
+    zipkin:
+        container_name: zipkin_ui
+        image: openzipkin/zipkin
+        ports:
+            - 9411:9411
+        environment:
+            RABBIT_ADDRESSES: rabbitmq_message:5672
+            # RABBIT_QUEUE: zipkin
+            # RABBIT_PASSWORD: guest
+            # RABBIT_USER: guest
+            # STORAGE_TYPE: mysql
+            # MYSQL_DB: db_zipkin
+            # MYSQL_USER: root
+            # MYSQL_PASS: root
+            # MYSQL_HOST: db_mysql_zipkin
+            # MYSQL_TCP_PORT: 3306
+            
+        depends_on:
+            - mysql
+            - rabbitmq
+        networks:
+            - app-network
+
+    rabbitmq:
+        container_name: rabbitmq_message
+        image: rabbitmq:3-management-alpine
+        ports:
+            - 5672:5672
+            - 15672:15672
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge
