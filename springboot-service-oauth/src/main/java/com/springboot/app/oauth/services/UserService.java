@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.springboot.app.oauth.clients.UserFeignClient;
 
+import brave.Tracer;
 import feign.FeignException;
 
 import com.springboot.app.commons.domain.entity.User;
@@ -26,6 +27,9 @@ public class UserService implements IUserService, UserDetailsService {
  
 	@Autowired
 	private UserFeignClient client;
+	
+	@Autowired
+	private Tracer tracer;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -46,6 +50,8 @@ public class UserService implements IUserService, UserDetailsService {
 		} catch (FeignException e) {
 			String error = "Login failed, there is no '" + username + "' user in the system";
 			LOGGER.error(error);
+			
+			tracer.currentSpan().tag("error.message", error + ": " + e.getMessage());
 
 			throw new UsernameNotFoundException(error);
 		}

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.springboot.app.commons.domain.entity.User;
 import com.springboot.app.oauth.services.IUserService;
 
+import brave.Tracer;
 import feign.FeignException;
 
 @Component
@@ -21,6 +22,9 @@ public class AuthenticationSuccessErrorHandler implements AuthenticationEventPub
 	
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private Tracer tracer;
 	
 	@Override
 	public void publishAuthenticationSuccess(Authentication authentication) {
@@ -38,9 +42,13 @@ public class AuthenticationSuccessErrorHandler implements AuthenticationEventPub
 
 	@Override
 	public void publishAuthenticationFailure(AuthenticationException exception, Authentication authentication) {
-		LOGGER.error("Error login: {}", exception.getMessage());
+		String message = "Error login: " + exception.getMessage();
+		LOGGER.error(message);
 		
 		try {
+			
+			StringBuilder erros = new StringBuilder();
+			erros.append(message);
 			
 			User user = userService.findByUsername(authentication.getName());
 			if (user.getAttempts() == null) {
@@ -49,14 +57,22 @@ public class AuthenticationSuccessErrorHandler implements AuthenticationEventPub
 			
 			LOGGER.info("Attempts current in: {}", user.getAttempts());
 			
+			erros.append(" - " + "Login attempts: " +user.getAttempts());
+			
 			user.setAttempts(user.getAttempts()+1);
 			
 			if (user.getAttempts() >= 3) {
-				LOGGER.error("User {} disable max attempts", user.getUsername());
+				String errorMaxAttempts = String.format("User %s disable max attempts", user.getUsername());
+				LOGGER.error(errorMaxAttempts);
+				
+				erros.append(" - " + errorMaxAttempts);
+				
 				user.setEnabled(false);
 			}
 			
 			userService.update(user, user.getId());
+			
+			tracer.currentSpan().tag("error.message", erros.toString());
 
 		} catch (FeignException e) {
 			LOGGER.error(String.format("User %s not exist in system", authentication.getName()));

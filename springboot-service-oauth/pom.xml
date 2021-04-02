@@ -66,6 +66,16 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-zipkin</artifactId>
+		</dependency>
+		
 	</dependencies>
 	
 	<dependencyManagement>
@@ -89,4 +99,8 @@
 		</plugins>
 	</build>
 
+	<properties>
+		<java.version>11</java.version>
+		<spring-cloud.version>Hoxton.SR10</spring-cloud.version>
+	</properties>
 </project>
